@@ -1,0 +1,27 @@
+{
+  "name": "fitsystem-monorepo",
+  "version": "1.0.0",
+  "description": "FitSystem Monorepo with NestJS + Angular 21 SSR",
+  "private": true,
+  "scripts": {
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart",
+    "install:all": "cd server && npm install && cd ../client-fitsystem && npm install && cd ../client-math && npm install",
+    "dev:server": "cd server && npm run start:dev",
+    "dev:fitsystem": "cd client-fitsystem && npm run serve:ssr",
+    "dev:math": "cd client-math && npm run serve:ssr",
+    "build:all": "cd server && npm run build && cd ../client-fitsystem && npm run build:ssr && cd ../client-math && npm run build:ssr"
+  },
+  "keywords": [
+    "monorepo",
+    "nestjs",
+    "angular",
+    "ssr",
+    "prisma",
+    "mysql"
+  ],
+  "author": "",
+  "license": "MIT"
+}

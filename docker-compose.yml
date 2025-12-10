@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fitsystem-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: fitsystem
+      MYSQL_USER: fitsystem
+      MYSQL_PASSWORD: fitsystem123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - fitsystem-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: fitsystem-server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: mysql://fitsystem:fitsystem123@mysql:3306/fitsystem
+      NODE_ENV: development
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - fitsystem-network
+    command: pnpm run start:dev
+
+  client-fitsystem:
+    build:
+      context: ./client-fitsystem
+      dockerfile: Dockerfile
+    container_name: fitsystem-client
+    restart: unless-stopped
+    ports:
+      - "4200:4200"
+    environment:
+      API_URL: http://server:3000
+    volumes:
+      - ./client-fitsystem:/app
+      - /app/node_modules
+    networks:
+      - fitsystem-network
+    command: pnpm run serve:ssr:fitsystem
+
+  client-math:
+    build:
+      context: ./client-math
+      dockerfile: Dockerfile
+    container_name: fitsystem-client-math
+    restart: unless-stopped
+    ports:
+      - "4300:4300"
+    environment:
+      API_URL: http://server:3000
+    volumes:
+      - ./client-math:/app
+      - /app/node_modules
+    networks:
+      - fitsystem-network
+    command: pnpm run serve:ssr:math
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  fitsystem-network:
+    driver: bridge
