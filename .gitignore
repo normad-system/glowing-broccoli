@@ -27,6 +27,16 @@ out/
 *.swo
 *~
 
+# Configuration files
+config/
+*.config.local.js
+*.config.local.json
+*.config.local.ts
+appsettings.local.json
+appsettings.*.json
+!appsettings.json
+settings.local.*
+
 # OS
 .DS_Store
 Thumbs.db
