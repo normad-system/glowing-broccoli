@@ -1,9 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient();
-
-export async function seedUsers() {
+export async function seedUsers(prisma: PrismaClient) {
   console.log('🌱 Seeding users...');
 
   const hashedPassword = await bcrypt.hash('admin123', 10);
@@ -27,7 +25,8 @@ export async function seedUsers() {
 
 // Run if executed directly
 if (require.main === module) {
-  seedUsers()
+  const prisma = new PrismaClient();
+  seedUsers(prisma)
     .catch((e) => {
       console.error('❌ Error seeding users:', e);
       process.exit(1);

@@ -1,15 +1,27 @@
+import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { seedCategories } from './seeds/categories.seed';
 import { seedUsers } from './seeds/users.seed';
 
-const prisma = new PrismaClient();
+// Prisma 7.x에서는 adapter 필요
+const adapter = new PrismaMariaDb({
+  host: 'localhost',
+  user: 'fitsystem',
+  password: 'fitsystem123',
+  database: 'fitsystem',
+  port: 3306,
+  connectionLimit: 5,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   console.log('🚀 Starting database seeding...\n');
 
-  await seedUsers();
+  await seedUsers(prisma);
   console.log('');
-  await seedCategories();
+  await seedCategories(prisma);
 
   console.log('\n🎉 All seeds completed successfully!');
 }

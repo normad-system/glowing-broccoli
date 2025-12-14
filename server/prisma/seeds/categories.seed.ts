@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
-
-export async function seedCategories() {
+export async function seedCategories(prisma: PrismaClient) {
   console.log('🌱 Seeding categories...');
 
   const categories = [
@@ -106,7 +104,8 @@ export async function seedCategories() {
 
 // Run if executed directly
 if (require.main === module) {
-  seedCategories()
+  const prisma = new PrismaClient();
+  seedCategories(prisma)
     .catch((e) => {
       console.error('❌ Error seeding categories:', e);
       process.exit(1);
