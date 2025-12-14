@@ -10,13 +10,102 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  password  String
+  role      Role       @default(USER)
+  bio       String?    @db.Text
+  avatar    String?
+  
+  posts     BlogPost[]
+  
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  @@index([email])
+}
+
+model Category {
+  id          Int        @id @default(autoincrement())
+  slug        String     @unique
+  
+  nameKo      String
+  nameEn      String
+  nameJa      String
+  
+  descriptionKo String?  @db.Text
+  descriptionEn String?  @db.Text
+  descriptionJa String?  @db.Text
+  
+  icon        String?
+  color       String?
+  order       Int        @default(0)
+  
+  posts       BlogPost[]
+  
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  @@index([slug])
+  @@index([order])
+}
+
+model BlogPost {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  
+  titleKo     String
+  titleEn     String
+  titleJa     String
+  
+  excerptKo   String?  @db.Text
+  excerptEn   String?  @db.Text
+  excerptJa   String?  @db.Text
+  
+  contentKo   String   @db.Text
+  contentEn   String   @db.Text
+  contentJa   String   @db.Text
+  
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  
+  metaKeywords String  @db.Text
+  difficulty   Difficulty @default(INTERMEDIATE)
+  readingTime  Int?
+  
+  thumbnailUrl String?
+  
+  relatedServiceId Int?
+  
+  viewCount    Int      @default(0)
+  likeCount    Int      @default(0)
+  
+  published    Boolean  @default(false)
+  publishedAt  DateTime?
+  
+  authorId     Int
+  author       User     @relation(fields: [authorId], references: [id])
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([categoryId, publishedAt])
+  @@index([slug])
+  @@index([published])
+}
+
+enum Role {
+  USER
+  ADMIN
+  EDITOR
+}
+
+enum Difficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
 }
