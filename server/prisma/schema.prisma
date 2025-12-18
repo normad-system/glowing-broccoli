@@ -13,20 +13,30 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String?
-  password  String
-  role      Role       @default(USER)
-  bio       String?    @db.Text
-  avatar    String?
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
+  name         String?
+  password     String
+  role         Role       @default(CUSTOMER)
   
-  posts     BlogPost[]
+  // 블로그 작성자 필드
+  bio          String?    @db.Text
+  avatar       String?
+  posts        BlogPost[]
   
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  // 고객 필드
+  phoneNumber  String?
+  address      String?    @db.Text
+  profileImage String?
+  isActive     Boolean    @default(true)
+  lastLoginAt  DateTime?
+  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   
   @@index([email])
+  @@index([role])
+  @@index([isActive])
 }
 
 model Category {
@@ -99,9 +109,9 @@ model BlogPost {
 }
 
 enum Role {
-  USER
-  ADMIN
+  CUSTOMER
   EDITOR
+  ADMIN
 }
 
 enum Difficulty {

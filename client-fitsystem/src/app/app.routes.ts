@@ -27,6 +27,14 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/category/category.component').then(m => m.CategoryComponent),
   },
   {
+    path: 'login',
+    loadComponent: () => import('./pages/auth/login.component').then(m => m.LoginComponent),
+  },
+  {
+    path: 'register',
+    loadComponent: () => import('./pages/auth/register.component').then(m => m.RegisterComponent),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

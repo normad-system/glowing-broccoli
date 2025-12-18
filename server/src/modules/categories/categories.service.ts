@@ -64,6 +64,17 @@ export class CategoriesService {
                 avatar: true,
               },
             },
+            category: {
+              select: {
+                id: true,
+                slug: true,
+                nameKo: true,
+                nameEn: true,
+                nameJa: true,
+                icon: true,
+                color: true,
+              },
+            },
           },
         },
         _count: {
