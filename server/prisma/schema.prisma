@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,94 +12,74 @@ model User {
   name         String?
   password     String
   role         Role       @default(CUSTOMER)
-  
-  // 블로그 작성자 필드
   bio          String?    @db.Text
   avatar       String?
-  posts        BlogPost[]
-  
-  // 고객 필드
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   phoneNumber  String?
   address      String?    @db.Text
   profileImage String?
   isActive     Boolean    @default(true)
   lastLoginAt  DateTime?
-  
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  
+  posts        BlogPost[]
+
   @@index([email])
   @@index([role])
   @@index([isActive])
 }
 
 model Category {
-  id          Int        @id @default(autoincrement())
-  slug        String     @unique
-  
-  nameKo      String
-  nameEn      String
-  nameJa      String
-  
-  descriptionKo String?  @db.Text
-  descriptionEn String?  @db.Text
-  descriptionJa String?  @db.Text
-  
-  icon        String?
-  color       String?
-  order       Int        @default(0)
-  
-  posts       BlogPost[]
-  
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  
+  id            Int        @id @default(autoincrement())
+  slug          String     @unique
+  nameKo        String
+  nameEn        String
+  nameJa        String
+  descriptionKo String?    @db.Text
+  descriptionEn String?    @db.Text
+  descriptionJa String?    @db.Text
+  icon          String?
+  color         String?
+  order         Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  posts         BlogPost[]
+
   @@index([slug])
   @@index([order])
 }
 
 model BlogPost {
-  id          Int      @id @default(autoincrement())
-  slug        String   @unique
-  
-  titleKo     String
-  titleEn     String
-  titleJa     String
-  
-  excerptKo   String?  @db.Text
-  excerptEn   String?  @db.Text
-  excerptJa   String?  @db.Text
-  
-  contentKo   String   @db.Text
-  contentEn   String   @db.Text
-  contentJa   String   @db.Text
-  
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-  
-  metaKeywords String  @db.Text
-  difficulty   Difficulty @default(INTERMEDIATE)
-  readingTime  Int?
-  
-  thumbnailUrl String?
-  
+  id               Int        @id @default(autoincrement())
+  slug             String     @unique
+  titleKo          String
+  titleEn          String
+  titleJa          String
+  excerptKo        String?    @db.Text
+  excerptEn        String?    @db.Text
+  excerptJa        String?    @db.Text
+  contentKo        String     @db.Text
+  contentEn        String     @db.Text
+  contentJa        String     @db.Text
+  categoryId       Int
+  metaKeywords     String     @db.Text
+  difficulty       Difficulty @default(INTERMEDIATE)
+  readingTime      Int?
+  thumbnailUrl     String?
   relatedServiceId Int?
-  
-  viewCount    Int      @default(0)
-  likeCount    Int      @default(0)
-  
-  published    Boolean  @default(false)
-  publishedAt  DateTime?
-  
-  authorId     Int
-  author       User     @relation(fields: [authorId], references: [id])
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  
+  viewCount        Int        @default(0)
+  likeCount        Int        @default(0)
+  published        Boolean    @default(false)
+  publishedAt      DateTime?
+  authorId         Int
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  author           User       @relation(fields: [authorId], references: [id])
+  category         Category   @relation(fields: [categoryId], references: [id])
+
   @@index([categoryId, publishedAt])
   @@index([slug])
   @@index([published])
+  @@index([authorId], map: "BlogPost_authorId_fkey")
 }
 
 enum Role {

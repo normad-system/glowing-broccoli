@@ -24,9 +24,9 @@ import { AuthService } from '../../services/auth/auth.service';
           </nav>
 
           <div class="header-actions">
-            @if (currentUser()) {
+            @if (currentUser$ | async; as user) {
               <div class="user-menu">
-                <span class="user-name">{{ currentUser()?.name || currentUser()?.email }}</span>
+                <span class="user-name">{{ user.name || user.email }}</span>
                 <button (click)="onLogout()" class="btn-logout">
                   {{ getText('logout') }}
                 </button>
@@ -218,7 +218,7 @@ export class HeaderComponent implements OnInit {
   private router = inject(Router);
   
   currentLang = this.languageService.currentLanguage;
-  currentUser = this.authService.currentUser$;
+  currentUser$ = this.authService.currentUser$;
 
   private translations = {
     ko: {
